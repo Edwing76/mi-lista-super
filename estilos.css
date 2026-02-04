@@ -1,0 +1,66 @@
+:root {
+    --bg-color: #0b0f1a;
+    --accent: #4ade80;
+    --card: #1e293b;
+    --text: #f8fafc;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 95%;
+    max-width: 400px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-title { text-align: center; margin-bottom: 30px; font-weight: 800; text-transform: uppercase; }
+.highlight { color: var(--accent); }
+
+.button-group { display: flex; flex-direction: column; gap: 12px; }
+
+.btn {
+    background: var(--card);
+    color: white;
+    border: 1px solid #334155;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 0px #000;
+}
+
+.btn-primary { border-bottom: 4px solid var(--accent); color: var(--accent); }
+.btn-whatsapp { background: #15803d; border: none; margin-bottom: 10px; }
+.btn-danger { background: #7f1d1d; border: none; font-size: 0.9rem; }
+.btn-secondary { background: transparent; border: 1px dashed #475569; margin-top: 10px; }
+
+.btn-item { background: #0f172a; border-left: 4px solid var(--accent); text-align: left; padding: 15px; }
+
+.item-compra {
+    background: #1e293b;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-controles {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-color);
+    padding: 15px 0;
+    margin-top: auto;
+}

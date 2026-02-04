@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Lista - Súper List</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="manifest" href="manifest.json">
+
+<script>
+  // Registrar el Service Worker para que funcione sin internet
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</head>
+<body>
+    <div class="app-container">
+        <h2 class="main-title" style="font-size: 2rem;">Tu <span class="highlight">Lista</span></h2>
+        
+        <div id="contenedor-lista" class="lista-items"></div>
+
+        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">📲 Mandar por WhatsApp</button>
+        <button class="btn btn-danger" onclick="borrarTodo()">🗑️ Borrar Todo</button>
+        <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 Inicio</button>
+    </div>
+
+   <script>
+    function cargarLista() {
+        const lista = JSON.parse(localStorage.getItem('miListaSúper')) || [];
+        const contenedor = document.getElementById('contenedor-lista');
+        contenedor.innerHTML = lista.length === 0 ? '<p style="text-align:center; color: #94a3b8;">La lista está vacía</p>' : '';
+
+        lista.forEach((item, index) => {
+            contenedor.innerHTML += `
+                <div class="item-compra">
+                    <span><strong>${item.nombre}</strong> <br> <small style="color: #4ade80">${item.categoria}</small></span>
+                    <button class="btn-borrar" onclick="eliminarUno(${index})">✕</button>
+                </div>`;
+        });
+    }
+
+    function enviarWhatsApp() {
+        const lista = JSON.parse(localStorage.getItem('miListaSúper')) || [];
+        if(lista.length === 0) return alert("Añade algo primero");
+
+        // --- LÓGICA DE AGRUPACIÓN POR CATEGORÍA ---
+        const agrupado = {};
+        lista.forEach(item => {
+            if (!agrupado[item.categoria]) {
+                agrupado[item.categoria] = [];
+            }
+            agrupado[item.categoria].push(item.nombre);
+        });
+
+        let msj = "*🛒 MI LISTA DE LA COMPRA*%0A";
+        msj += "--------------------------%0A";
+
+        for (const cat in agrupado) {
+            msj += `%0A*${cat.toUpperCase()}*%0A`; // Título de la categoría en negrita y mayúsculas
+            agrupado[cat].forEach(prod => {
+                msj += `- ${prod}%0A`; // Productos con un guion
+            });
+        }
+
+        window.open(`https://wa.me/?text=${msj}`, '_blank');
+    }
+
+    function eliminarUno(index) {
+        let lista = JSON.parse(localStorage.getItem('miListaSúper'));
+        lista.splice(index, 1);
+        localStorage.setItem('miListaSúper', JSON.stringify(lista));
+        cargarLista();
+    }
+
+    function borrarTodo() {
+        if(confirm("¿Vaciar lista?")) { 
+            localStorage.removeItem('miListaSúper'); 
+            cargarLista(); 
+        }
+    }
+    
+    cargarLista();
+</script>
+</body>
+</html>

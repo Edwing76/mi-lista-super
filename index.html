@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Súper List - Inicio</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="manifest" href="manifest.json">
+
+<script>
+  // Registrar el Service Worker para que funcione sin internet
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1 class="main-title">Súper <span class="highlight">List</span></h1>
+        </header>
+        <nav class="button-group">
+            <button class="btn btn-primary" onclick="location.href='crear.html'">
+                🚀 EMPEZAR LISTA
+            </button>
+            <button class="btn btn-secondary" onclick="location.href='lista.html'">
+                📋 Ver lista actual
+            </button>
+        </nav>
+    </div>
+</body>
+</html>

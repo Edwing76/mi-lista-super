@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selección - Súper List</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="manifest" href="manifest.json">
+
+<script>
+  // Registrar el Service Worker para que funcione sin internet
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</head>
+<body>
+    <div class="app-container">
+        <div id="cabecera">
+            <h2 id="titulo-paso" class="main-title" style="font-size: 1.8rem;">Elije <span class="highlight">Categoría</span></h2>
+        </div>
+
+        <div id="contenedor-opciones" class="button-group"></div>
+
+        <div class="footer-controles">
+            <button class="btn btn-whatsapp" onclick="location.href='lista.html'">
+                VER LISTA ( <span id="contador">0</span> )
+            </button>
+            <button class="btn btn-secondary" onclick="location.href='index.html'">Volver al Menú</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SECCIÓN PARA PERSONALIZAR EN EL FUTURO ---
+        const datos = {
+            "🍎 Fruta y Verdura": ["Patatas", "Cebollas", "Tomates", "Lechuga", "Zanahorias", "Plátanos", "Manzanas", "Limones"],
+            "🥩 Carne y Pescado": ["Pollo", "Ternera", "Cerdo", "Hamburguesas", "Salchichas", "Salmón", "Merluza", "Embutido"],
+            "🥛 Lácteos y Huevos": ["Leche", "Huevos", "Yogures", "Queso", "Mantequilla", "Nata", "Queso rallado"],
+            "🍞 Despensa": ["Pan de molde", "Arroz", "Pasta", "Aceite", "Sal", "Azúcar", "Harina", "Café", "Legumbres", "Tomate frito"],
+            "🥤 Bebidas": ["Agua", "Coca-Cola", "Cerveza", "Vino", "Zumo", "Leche vegetal"],
+            "🧼 Limpieza": ["Detergente", "Suavizante", "Lavavajillas", "Papel cocina", "Bolsas basura", "Multiusos"],
+            "🪒 Higiene": ["Papel Higiénico", "Gel de baño", "Champú", "Desodorante", "Pasta de dientes"]
+        };
+
+        let listaActual = JSON.parse(localStorage.getItem('miListaSúper')) || [];
+        actualizarContador();
+
+        // Muestra el menú de categorías
+        function mostrarCategorias() {
+            document.getElementById('titulo-paso').innerHTML = 'Elije <span class="highlight">Categoría</span>';
+            const contenedor = document.getElementById('contenedor-opciones');
+            contenedor.innerHTML = '';
+
+            Object.keys(datos).forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.innerText = cat;
+                btn.onclick = () => mostrarProductos(cat);
+                contenedor.appendChild(btn);
+            });
+        }
+
+        // Muestra los productos de la categoría elegida
+        function mostrarProductos(cat) {
+            document.getElementById('titulo-paso').innerHTML = `<small>Categoría:</small><br>${cat}`;
+            const contenedor = document.getElementById('contenedor-opciones');
+            contenedor.innerHTML = '';
+
+            datos[cat].forEach(prod => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-item';
+                btn.innerText = prod;
+                btn.onclick = () => guardarYVolver(prod, cat);
+                contenedor.appendChild(btn);
+            });
+
+            // Botón para volver atrás sin elegir nada
+            const btnVolver = document.createElement('button');
+            btnVolver.className = 'btn btn-secondary';
+            btnVolver.innerText = '⬅ Volver a Categorías';
+            btnVolver.onclick = mostrarCategorias;
+            contenedor.appendChild(btnVolver);
+            
+            window.scrollTo(0, 0); // Sube arriba al cambiar de pantalla
+        }
+
+        // Guarda el producto y hace el bucle automático
+        function guardarYVolver(producto, categoria) {
+            listaActual.push({ nombre: producto, categoria: categoria });
+            localStorage.setItem('miListaSúper', JSON.stringify(listaActual));
+            actualizarContador();
+            
+            // Feedback visual rápido (opcional)
+            mostrarCategorias(); 
+        }
+
+        function actualizarContador() {
+            document.getElementById('contador').innerText = listaActual.length;
+        }
+
+        // Iniciar la app mostrando categorías
+        mostrarCategorias();
+    </script>
+</body>
+</html>

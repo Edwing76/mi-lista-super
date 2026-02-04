@@ -1,0 +1,15 @@
+{
+  "name": "Súper List Pro",
+  "short_name": "SúperList",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0b0f1a",
+  "theme_color": "#0b0f1a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3737/3737372.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
