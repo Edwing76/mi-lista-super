@@ -32,15 +32,36 @@
 
     <script>
         // --- SECCIÓN PARA PERSONALIZAR EN EL FUTURO ---
-        const datos = {
-            "🍎 Fruta y Verdura": ["Patatas", "Cebollas", "Tomates", "Lechuga", "Zanahorias", "Plátanos", "Manzanas", "Limones"],
-            "🥩 Carne y Pescado": ["Pollo", "Ternera", "Cerdo", "Hamburguesas", "Salchichas", "Salmón", "Merluza", "Embutido"],
-            "🥛 Lácteos y Huevos": ["Leche", "Huevos", "Yogures", "Queso", "Mantequilla", "Nata", "Queso rallado"],
-            "🍞 Despensa": ["Pan de molde", "Arroz", "Pasta", "Aceite", "Sal", "Azúcar", "Harina", "Café", "Legumbres", "Tomate frito"],
-            "🥤 Bebidas": ["Agua", "Coca-Cola", "Cerveza", "Vino", "Zumo", "Leche vegetal"],
-            "🧼 Limpieza": ["Detergente", "Suavizante", "Lavavajillas", "Papel cocina", "Bolsas basura", "Multiusos"],
-            "🪒 Higiene": ["Papel Higiénico", "Gel de baño", "Champú", "Desodorante", "Pasta de dientes"]
-        };
+     const datos = {
+  "🍎 Fruta y Verdura": [
+    "Patatas", "Cebollas", "Tomates", "Lechuga", "Zanahorias", "Plátanos", 
+    "Manzanas", "Membrillos", "Limones", "Uva blanca", "Tomate pera", 
+    "Naranja", "Coliflor", "Kiwi amarillo", "Tomate cherry", "Judía plana"
+  ],
+  "🥩 Carne y Pescado": [
+    "Pollo", "Ternera", "Cerdo", "Hamburguesas", "Salchichas", "Salmón", 
+    "Merluza", "Embutido", "Pechuga de pavo", "Bacon", "Salchichón", 
+    "Calamares", "Mejillones", "Caballa"
+  ],
+  "🥛 Lácteos y Huevos": [
+    "Leche", "Huevos", "Yogures", "Queso", "Mantequilla", "Nata", 
+    "Queso rallado", "Mozzarella", "Kéfir", "Bífidus"
+  ],
+  "🍞 Despensa": [
+    "Pan de molde", "Arroz", "Pasta", "Aceite", "Sal", "Azúcar", "Harina", 
+    "Café", "Legumbres", "Tomate frito", "Garbanzos", "Alubia blanca", 
+    "Dátiles", "Hummus", "Guacamole", "Aceitunas", "Nachos", "Gusis"
+  ],
+  "🥤 Bebidas": ["Agua", "Coca-Cola", "Cerveza", "Vino", "Zumo", "Leche vegetal"],
+  "🧼 Limpieza": [
+    "Detergente", "Suavizante", "Lavavajillas", "Papel cocina", 
+    "Bolsas basura", "Multiusos", "Colgador WC", "Fregona"
+  ],
+  "🪒 Higiene": [
+    "Papel Higiénico", "Gel de baño", "Champú", "Desodorante", 
+    "Pasta de dientes", "Maquinilla afeitar", "Cepillo dientes"
+  ]
+};
 
         let listaActual = JSON.parse(localStorage.getItem('miListaSúper')) || [];
         actualizarContador();
