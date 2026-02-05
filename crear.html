@@ -8,11 +8,31 @@
     <link rel="manifest" href="manifest.json">
 
 <script>
-  // Registrar el Service Worker para que funcione sin internet
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
 </script>
+
+<style>
+    /* Estilos extra para la gestión de productos */
+    .item-flex {
+        display: flex;
+        gap: 5px;
+        align-items: stretch;
+    }
+    .btn-delete-item {
+        background: #7f1d1d;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0 15px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .btn-item-main {
+        flex-grow: 1;
+    }
+</style>
 </head>
 <body>
     <div class="app-container">
@@ -31,42 +51,25 @@
     </div>
 
     <script>
-        // --- SECCIÓN PARA PERSONALIZAR EN EL FUTURO ---
-     const datos = {
-  "🍎 Fruta y Verdura": [
-    "Patatas", "Cebollas", "Tomates", "Lechuga", "Zanahorias", "Plátanos", 
-    "Manzanas", "Membrillos", "Limones", "Uva blanca", "Tomate pera", 
-    "Naranja", "Coliflor", "Kiwi amarillo", "Tomate cherry", "Judía plana"
-  ],
-  "🥩 Carne y Pescado": [
-    "Pollo", "Ternera", "Cerdo", "Hamburguesas", "Salchichas", "Salmón", 
-    "Merluza", "Embutido", "Pechuga de pavo", "Bacon", "Salchichón", 
-    "Calamares", "Mejillones", "Caballa"
-  ],
-  "🥛 Lácteos y Huevos": [
-    "Leche", "Huevos", "Yogures", "Queso", "Mantequilla", "Nata", 
-    "Queso rallado", "Mozzarella", "Kéfir", "Bífidus"
-  ],
-  "🍞 Despensa": [
-    "Pan de molde", "Arroz", "Pasta", "Aceite", "Sal", "Azúcar", "Harina", 
-    "Café", "Legumbres", "Tomate frito", "Garbanzos", "Alubia blanca", 
-    "Dátiles", "Hummus", "Guacamole", "Aceitunas", "Nachos", "Gusis"
-  ],
-  "🥤 Bebidas": ["Agua", "Coca-Cola", "Cerveza", "Vino", "Zumo", "Leche vegetal"],
-  "🧼 Limpieza": [
-    "Detergente", "Suavizante", "Lavavajillas", "Papel cocina", 
-    "Bolsas basura", "Multiusos", "Colgador WC", "Fregona"
-  ],
-  "🪒 Higiene": [
-    "Papel Higiénico", "Gel de baño", "Champú", "Desodorante", 
-    "Pasta de dientes", "Maquinilla afeitar", "Cepillo dientes"
-  ]
-};
+        const datosPorDefecto = {
+            "🍎 Fruta y Verdura": ["Patatas", "Cebollas", "Tomates", "Lechuga", "Zanahorias", "Plátanos", "Manzanas", "Limones"],
+            "🥩 Carne y Pescado": ["Pollo", "Ternera", "Cerdo", "Hamburguesas", "Salmón", "Merluza"],
+            "🥛 Lácteos y Huevos": ["Leche", "Huevos", "Yogures", "Queso", "Mantequilla"],
+            "🍞 Despensa": ["Pan de molde", "Arroz", "Pasta", "Aceite", "Sal", "Azúcar", "Café", "Legumbres"],
+            "🥤 Bebidas": ["Agua", "Coca-Cola", "Cerveza", "Vino", "Zumo"],
+            "🧼 Limpieza": ["Detergente", "Suavizante", "Lavavajillas", "Papel cocina", "Bolsas basura"],
+            "🪒 Higiene": ["Papel Higiénico", "Gel de baño", "Champú", "Desodorante", "Pasta de dientes"]
+        };
+
+        let datos = JSON.parse(localStorage.getItem('misDatosInventario')) || datosPorDefecto;
+
+        function guardarInventario() {
+            localStorage.setItem('misDatosInventario', JSON.stringify(datos));
+        }
 
         let listaActual = JSON.parse(localStorage.getItem('miListaSúper')) || [];
         actualizarContador();
 
-        // Muestra el menú de categorías
         function mostrarCategorias() {
             document.getElementById('titulo-paso').innerHTML = 'Elije <span class="highlight">Categoría</span>';
             const contenedor = document.getElementById('contenedor-opciones');
@@ -79,47 +82,89 @@
                 btn.onclick = () => mostrarProductos(cat);
                 contenedor.appendChild(btn);
             });
+
+            const btnNuevaCat = document.createElement('button');
+            btnNuevaCat.className = 'btn btn-secondary';
+            btnNuevaCat.style.borderStyle = 'solid';
+            btnNuevaCat.innerText = '➕ Nueva Categoría';
+            btnNuevaCat.onclick = () => {
+                const nombre = prompt("Nombre de la nueva categoría:");
+                if (nombre && nombre.trim() !== "") {
+                    if (!datos[nombre]) {
+                        datos[nombre] = [];
+                        guardarInventario();
+                        mostrarCategorias();
+                    }
+                }
+            };
+            contenedor.appendChild(btnNuevaCat);
         }
 
-        // Muestra los productos de la categoría elegida
         function mostrarProductos(cat) {
             document.getElementById('titulo-paso').innerHTML = `<small>Categoría:</small><br>${cat}`;
             const contenedor = document.getElementById('contenedor-opciones');
             contenedor.innerHTML = '';
 
-            datos[cat].forEach(prod => {
-                const btn = document.createElement('button');
-                btn.className = 'btn btn-item';
-                btn.innerText = prod;
-                btn.onclick = () => guardarYVolver(prod, cat);
-                contenedor.appendChild(btn);
+            const btnNuevoProd = document.createElement('button');
+            btnNuevoProd.className = 'btn btn-primary';
+            btnNuevoProd.innerText = '➕ Añadir Producto a ' + cat;
+            btnNuevoProd.onclick = () => {
+                const nuevoProd = prompt(`¿Qué quieres añadir a ${cat}?`);
+                if (nuevoProd && nuevoProd.trim() !== "") {
+                    datos[cat].push(nuevoProd.trim());
+                    guardarInventario();
+                    mostrarProductos(cat);
+                }
+            };
+            contenedor.appendChild(btnNuevoProd);
+
+            datos[cat].forEach((prod, index) => {
+                const div = document.createElement('div');
+                div.className = 'item-flex';
+
+                const btnItem = document.createElement('button');
+                btnItem.className = 'btn btn-item btn-item-main';
+                btnItem.innerText = prod;
+                btnItem.onclick = () => guardarYVolver(prod, cat);
+
+                const btnBorrar = document.createElement('button');
+                btnBorrar.className = 'btn-delete-item';
+                btnBorrar.innerText = '✕';
+                btnBorrar.onclick = () => eliminarProductoDelInventario(cat, index);
+
+                div.appendChild(btnItem);
+                div.appendChild(btnBorrar);
+                contenedor.appendChild(div);
             });
 
-            // Botón para volver atrás sin elegir nada
             const btnVolver = document.createElement('button');
             btnVolver.className = 'btn btn-secondary';
             btnVolver.innerText = '⬅ Volver a Categorías';
             btnVolver.onclick = mostrarCategorias;
             contenedor.appendChild(btnVolver);
             
-            window.scrollTo(0, 0); // Sube arriba al cambiar de pantalla
+            window.scrollTo(0, 0);
         }
 
-        // Guarda el producto y hace el bucle automático
+        function eliminarProductoDelInventario(cat, index) {
+            if (confirm("¿Eliminar este producto del catálogo?")) {
+                datos[cat].splice(index, 1);
+                guardarInventario();
+                mostrarProductos(cat);
+            }
+        }
+
         function guardarYVolver(producto, categoria) {
             listaActual.push({ nombre: producto, categoria: categoria });
             localStorage.setItem('miListaSúper', JSON.stringify(listaActual));
             actualizarContador();
-            
-            // Feedback visual rápido (opcional)
-            mostrarCategorias(); 
+            mostrarCategorias();
         }
 
         function actualizarContador() {
             document.getElementById('contador').innerText = listaActual.length;
         }
 
-        // Iniciar la app mostrando categorías
         mostrarCategorias();
     </script>
 </body>
