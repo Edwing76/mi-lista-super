@@ -1,4 +1,4 @@
-const CACHE_NAME = 'superlist-v1';
+const CACHE_NAME = 'superlist-v2';
 const assets = [
   'index.html',
   'crear.html',
@@ -22,4 +22,5 @@ self.addEventListener('fetch', event => {
       return response || fetch(event.request);
     })
   );
+
 });
